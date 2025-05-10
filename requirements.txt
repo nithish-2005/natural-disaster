@@ -1,0 +1,8 @@
+Flask
+requests
+scikit-learn
+pandas
+gtts
+twilio
+matplotlib
+playsound

@@ -1,0 +1,8 @@
+OPENWEATHER_API_KEY = 'your_openweather_api_key'
+TWILIO_SID = 'your_twilio_sid'
+TWILIO_AUTH_TOKEN = 'your_twilio_auth_token'
+TWILIO_PHONE_NUMBER = 'your_twilio_phone_number'
+TARGET_PHONE_NUMBER = 'receiver_phone_number'
+EMAIL_SENDER = 'your_email@example.com'
+EMAIL_PASSWORD = 'your_email_password'
+EMAIL_RECEIVER = 'receiver_email@example.com'
