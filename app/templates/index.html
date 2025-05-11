@@ -1,15 +1,186 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Weather & Flood Dashboard</title>
+    <meta charset="UTF-8">
+    <title>Weather Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f2f2f2;
+        }
+        .container {
+            background: white;
+            padding: 2em;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 1000px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .metrics {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            margin-bottom: 2em;
+        }
+        .metric {
+            margin: 10px;
+        }
+        canvas {
+            max-width: 100%;
+        }
+    </style>
 </head>
 <body>
-    <h1>Weather Dashboard</h1>
-    <p>Temperature: {{ weather.temperature }}°C</p>
-    <p>Humidity: {{ weather.humidity }}%</p>
-    <p>Wind Speed: {{ weather.wind_speed }} km/h</p>
-    <p>Rain (1h): {{ weather.rain }} mm</p>
-    <p>Description: {{ weather.description }}</p>
-    <h2>Flood Risk Level: {{ risk }}</h2>
+    <div class="container">
+        <h1>Weather Dashboard</h1>
+        <p style="text-align:center;" id="location">Location: Loading...</p>
+        <div class="metrics">
+            <div class="metric"><strong>Temperature:</strong> <span id="temperature">--</span>&deg;C</div>
+            <div class="metric"><strong>Humidity:</strong> <span id="humidity">--</span>%</div>
+            <div class="metric"><strong>UV Index:</strong> <span id="uv_index">--</span></div>
+            <div class="metric"><strong>Wind Speed:</strong> <span id="wind_speed">--</span> km/h</div>
+            <div class="metric"><strong>Pressure:</strong> <span id="pressure">--</span> hPa</div>
+            <div class="metric"><strong>Visibility:</strong> <span id="visibility">--</span> m</div>
+            <div class="metric"><strong>Rain:</strong> <span id="rain">--</span> mm</div>
+            <div class="metric"><strong>Earthquake Possibility:</strong> <span id="earthquake_possibility">--</span></div>
+            <div class="metric"><strong>Flood Risk:</strong> <span id="flood_risk">--</span></div>
+        </div>
+
+        <canvas id="weatherChart"></canvas>
+
+        <script>
+            const ctx = document.getElementById('weatherChart').getContext('2d');
+            let weatherChart;
+
+            function updateChart(data) {
+                const labels = Array.from({length: 24}, (_, i) => i + "h");
+                const datasets = [
+                    {
+                        label: 'Temperature (°C)',
+                        data: data.temperature_data,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        fill: true
+                    },
+                    {
+                        label: 'Humidity (%)',
+                        data: data.humidity_data,
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        fill: false
+                    },
+                    {
+                        label: 'Rain (mm)',
+                        data: data.rain_data,
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        fill: false
+                    },
+                    {
+                        label: 'UV Index',
+                        data: data.uv_index_data,
+                        borderColor: 'rgba(153, 102, 255, 1)',
+                        fill: false
+                    },
+                    {
+                        label: 'Pressure (hPa)',
+                        data: data.pressure_data,
+                        borderColor: 'rgba(255, 206, 86, 1)',
+                        fill: false
+                    },
+                    {
+                        label: 'Earthquake Possibility',
+                        data: data.earthquake_possibility_data,
+                        borderColor: 'rgba(255, 159, 64, 1)',
+                        fill: false
+                    }
+                ];
+
+                if (weatherChart) {
+                    weatherChart.data.labels = labels;
+                    weatherChart.data.datasets = datasets;
+                    weatherChart.update();
+                } else {
+                    weatherChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: datasets
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                title: {
+                                    display: true,
+                                    text: 'Weather Parameters Over 24 Hours'
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+
+            function updateMetrics(data) {
+                document.getElementById('location').textContent = 'Location: ' + data.location;
+                document.getElementById('temperature').textContent = data.temperature;
+                document.getElementById('humidity').textContent = data.humidity;
+                document.getElementById('uv_index').textContent = data.uv_index;
+                document.getElementById('wind_speed').textContent = data.wind_speed || '--';
+                document.getElementById('pressure').textContent = data.pressure;
+                document.getElementById('visibility').textContent = data.visibility || '--';
+                document.getElementById('rain').textContent = data.rain;
+                document.getElementById('earthquake_possibility').textContent = data.earthquake_possibility || '--';
+                document.getElementById('flood_risk').textContent = data.flood_risk || '--';
+            }
+
+            function fetchWeather(lat, lon) {
+                fetch(`/weather?lat=${lat}&lon=${lon}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            alert('Error fetching weather data: ' + data.error);
+                            return;
+                        }
+                        updateMetrics(data);
+                        updateChart(data);
+                    })
+                    .catch(error => {
+                        alert('Failed to fetch weather data');
+                        console.error(error);
+                    });
+            }
+
+            function getLocationAndFetchWeather() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        position => {
+                            const lat = position.coords.latitude;
+                            const lon = position.coords.longitude;
+                            fetchWeather(lat, lon);
+                        },
+                        error => {
+                            alert('Geolocation failed or denied. Using default location.');
+                            // Use default location (e.g., Chennai)
+                            fetchWeather(13.0827, 80.2707);
+                        }
+                    );
+                } else {
+                    alert('Geolocation is not supported by this browser. Using default location.');
+                    fetchWeather(13.0827, 80.2707);
+                }
+            }
+
+            // On page load, get location and fetch weather
+            window.onload = getLocationAndFetchWeather;
+        </script>
+    </div>
 </body>
 </html>
