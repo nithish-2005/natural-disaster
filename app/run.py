@@ -79,6 +79,10 @@ def weather():
         wind_speed_data = [round(random.uniform(0, 20), 1) for _ in range(24)]
         visibility_data = [round(random.uniform(1000, 10000), 1) for _ in range(24)]
         earthquake_possibility_data = [round(random.uniform(0, 1), 2) for _ in range(24)]
+        cyclone_data = [random.choice([True, False]) for _ in range(24)]
+        heatwave_data = [random.choice([True, False]) for _ in range(24)]
+        wildfire_data = [random.choice([True, False]) for _ in range(24)]
+        landslide_data = [random.choice([True, False]) for _ in range(24)]
 
         temperature = temperature_data[0]
         humidity = humidity_data[0]
@@ -88,6 +92,10 @@ def weather():
         wind_speed = wind_speed_data[0]
         visibility = visibility_data[0]
         earthquake_possibility = earthquake_possibility_data[0]
+        cyclone = cyclone_data[0]
+        heatwave = heatwave_data[0]
+        wildfire = wildfire_data[0]
+        landslide = landslide_data[0]
 
         flood_risk = predict_flood_risk({'rain': rain, 'humidity': humidity})
 
@@ -116,6 +124,14 @@ def weather():
             alerts.append("High Flood Risk")
         if earthquake_possibility > CRITICALS['earthquake_possibility']:
             alerts.append(f"High Earthquake Possibility: {earthquake_possibility}")
+        if cyclone:
+            alerts.append("Cyclone Warning")
+        if heatwave:
+            alerts.append("Heatwave Warning")
+        if wildfire:
+            alerts.append("Wildfire Warning")
+        if landslide:
+            alerts.append("Landslide Warning")
 
         def alert_if_critical():
             if alerts:
@@ -135,6 +151,10 @@ def weather():
             'wind_speed': wind_speed,
             'visibility': visibility,
             'earthquake_possibility': earthquake_possibility,
+            'cyclone': cyclone,
+            'heatwave': heatwave,
+            'wildfire': wildfire,
+            'landslide': landslide,
             'flood_risk': flood_risk,
             'alerts': alerts,
             'temperature_data': temperature_data,
@@ -144,7 +164,11 @@ def weather():
             'pressure_data': pressure_data,
             'wind_speed_data': wind_speed_data,
             'visibility_data': visibility_data,
-            'earthquake_possibility_data': earthquake_possibility_data
+            'earthquake_possibility_data': earthquake_possibility_data,
+            'cyclone_data': cyclone_data,
+            'heatwave_data': heatwave_data,
+            'wildfire_data': wildfire_data,
+            'landslide_data': landslide_data
         })
 
 if __name__ == '__main__':

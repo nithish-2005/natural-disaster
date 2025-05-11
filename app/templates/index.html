@@ -52,6 +52,10 @@
             <div class="metric"><strong>Rain:</strong> <span id="rain">--</span> mm</div>
             <div class="metric"><strong>Earthquake Possibility:</strong> <span id="earthquake_possibility">--</span></div>
             <div class="metric"><strong>Flood Risk:</strong> <span id="flood_risk">--</span></div>
+            <div class="metric"><strong>Cyclone:</strong> <span id="cyclone">--</span></div>
+            <div class="metric"><strong>Heatwave:</strong> <span id="heatwave">--</span></div>
+            <div class="metric"><strong>Wildfire:</strong> <span id="wildfire">--</span></div>
+            <div class="metric"><strong>Landslide:</strong> <span id="landslide">--</span></div>
         </div>
 
         <canvas id="weatherChart"></canvas>
@@ -141,6 +145,10 @@
                 document.getElementById('rain').textContent = data.rain;
                 document.getElementById('earthquake_possibility').textContent = data.earthquake_possibility || '--';
                 document.getElementById('flood_risk').textContent = data.flood_risk || '--';
+                document.getElementById('cyclone').textContent = data.cyclone ? 'Yes' : 'No';
+                document.getElementById('heatwave').textContent = data.heatwave ? 'Yes' : 'No';
+                document.getElementById('wildfire').textContent = data.wildfire ? 'Yes' : 'No';
+                document.getElementById('landslide').textContent = data.landslide ? 'Yes' : 'No';
             }
 
             function fetchWeather(lat, lon) {
