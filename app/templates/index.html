@@ -133,7 +133,9 @@
                 document.getElementById('temperature').textContent = data.temperature;
                 document.getElementById('humidity').textContent = data.humidity;
                 document.getElementById('uv_index').textContent = data.uv_index;
-                document.getElementById('wind_speed').textContent = data.wind_speed || '--';
+                // Convert wind speed from m/s to km/h
+                const windSpeedKmh = data.wind_speed ? (data.wind_speed * 3.6).toFixed(1) : '--';
+                document.getElementById('wind_speed').textContent = windSpeedKmh;
                 document.getElementById('pressure').textContent = data.pressure;
                 document.getElementById('visibility').textContent = data.visibility || '--';
                 document.getElementById('rain').textContent = data.rain;

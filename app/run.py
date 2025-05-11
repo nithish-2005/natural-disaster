@@ -65,6 +65,7 @@ def weather():
             'temperature': current['main']['temp'],
             'humidity': current['main']['humidity'],
             'wind_speed': current['wind']['speed'],
+            'visibility': current.get('visibility', None),
             'description': current['weather'][0]['description'],
             'forecast_data': forecast_data
         })
@@ -75,6 +76,8 @@ def weather():
         rain_data = [round(random.uniform(0, 100), 1) for _ in range(24)]
         uv_index_data = [round(random.uniform(0, 11), 1) for _ in range(24)]
         pressure_data = [round(random.uniform(950, 1050), 1) for _ in range(24)]
+        wind_speed_data = [round(random.uniform(0, 20), 1) for _ in range(24)]
+        visibility_data = [round(random.uniform(1000, 10000), 1) for _ in range(24)]
         earthquake_possibility_data = [round(random.uniform(0, 1), 2) for _ in range(24)]
 
         temperature = temperature_data[0]
@@ -82,6 +85,8 @@ def weather():
         rain = rain_data[0]
         uv_index = uv_index_data[0]
         pressure = pressure_data[0]
+        wind_speed = wind_speed_data[0]
+        visibility = visibility_data[0]
         earthquake_possibility = earthquake_possibility_data[0]
 
         flood_risk = predict_flood_risk({'rain': rain, 'humidity': humidity})
@@ -127,6 +132,8 @@ def weather():
             'rain': rain,
             'uv_index': uv_index,
             'pressure': pressure,
+            'wind_speed': wind_speed,
+            'visibility': visibility,
             'earthquake_possibility': earthquake_possibility,
             'flood_risk': flood_risk,
             'alerts': alerts,
@@ -135,6 +142,8 @@ def weather():
             'rain_data': rain_data,
             'uv_index_data': uv_index_data,
             'pressure_data': pressure_data,
+            'wind_speed_data': wind_speed_data,
+            'visibility_data': visibility_data,
             'earthquake_possibility_data': earthquake_possibility_data
         })
 
